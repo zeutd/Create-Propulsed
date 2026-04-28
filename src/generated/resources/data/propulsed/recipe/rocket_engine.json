@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "simulated:engine_assembly"
+    },
+    "E": {
+      "item": "create:fluid_pipe"
+    },
+    "F": {
+      "item": "create:propeller"
+    },
+    "I": {
+      "item": "create:sturdy_sheet"
+    },
+    "P": {
+      "item": "create:mechanical_pump"
+    },
+    "S": {
+      "item": "create:industrial_iron_block"
+    }
+  },
+  "pattern": [
+    "EPE",
+    "ASA",
+    "FIF"
+  ],
+  "result": {
+    "count": 1,
+    "id": "propulsed:rocket_engine"
+  }
+}

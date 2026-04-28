@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "propulsed:rocket_engine"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "propulsed:blocks/rocket_engine"
+}
