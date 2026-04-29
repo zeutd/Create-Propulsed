@@ -1,3 +1,4 @@
 {
-  "block.propulsed.rocket_engine": "Rocket Engine"
+  "block.propulsed.rocket_engine": "Basic Rocket Engine",
+  "propulsed.simulated_section.propulsed": "Propulsed"
 }

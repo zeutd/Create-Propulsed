@@ -1,7 +1,7 @@
-// 1.21.1	2026-04-25T17:59:55.1707061	Registrate Provider for propulsed [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
+// 1.21.1	2026-04-28T19:29:51.1836653	Registrate Provider for propulsed [Registries, Data Maps, Recipes, Advancements, Loot Tables, Tags (blocks), Tags (enchantments), Tags (items), Tags (fluids), Tags (entity_types), generic_server_provider, Blockstates, Item models, Lang (en_us/en_ud), generic_client_provider]
 888225998a91cbd5a058e5bc6fb1a10b99766719 assets/propulsed/blockstates/rocket_engine.json
-1c33e95654c01fb8ff91a31ec117fc340395072f assets/propulsed/lang/en_ud.json
-087526ab0459c2f1ca97832419887ef1613c10a6 assets/propulsed/lang/en_us.json
+bf7c0b4b701b975b04f2a53abba798a92a1b0e56 assets/propulsed/lang/en_ud.json
+4b9a54394fe842cbc7d6fd8d2707dd1da1053c68 assets/propulsed/lang/en_us.json
 faae59d9aee84eb26b7433e4b9e41ff9d555bc7e assets/propulsed/models/block/rocket_engine_powered.json
 43930ed7687c4d2e175b19f9c4f1b2200f57e9f9 assets/propulsed/models/item/rocket_engine.json
 b4bb787a7246041eb057fb7019ce6113afe8cf24 data/minecraft/tags/block/mineable/pickaxe.json
@@ -9,3 +9,4 @@ b4bb787a7246041eb057fb7019ce6113afe8cf24 data/minecraft/tags/block/mineable/pick
 96b2aa951c37a7305841e38718dbc3a68db04a59 data/propulsed/loot_table/blocks/rocket_engine.json
 ad8ae8350b91c9fcbd2bdeba02ab22a68019a4bc data/propulsed/recipe/rocket_engine.json
 db6195d77bd598771b111d12750ba39f41fe35c7 data/propulsed/tags/fluid/fuel.json
+a21a0c0475e5760c93633a06902822a4bfd3611d data/propulsed/tags/fluid/good_fuel.json

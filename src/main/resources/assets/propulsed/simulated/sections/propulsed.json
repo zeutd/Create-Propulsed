@@ -2,7 +2,7 @@
   "priority": 3000,
   "title": {
     "text": { "translate": "propulsed.simulated_section.propulsed" },
-    "background": "#0012bb3c"
+    "background": "#3c0012bb"
   },
   "sprite": "propulsed:banner",
   "only_animate_on_hover": true

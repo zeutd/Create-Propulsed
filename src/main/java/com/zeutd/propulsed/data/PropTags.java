@@ -33,10 +33,10 @@ public class PropTags {
             prov.tag(FUEL).add(Fluids.LAVA);
 
             if (ModList.get().isLoaded("createdieselgenerators")) {
-                prov.tag(GOOD_FUEL).add(CDGFluids.DIESEL.get());
-                prov.tag(GOOD_FUEL).add(CDGFluids.ETHANOL.get());
-                prov.tag(GOOD_FUEL).add(CDGFluids.BIODIESEL.get());
-                prov.tag(GOOD_FUEL).add(CDGFluids.GASOLINE.get());
+                prov.tag(GOOD_FUEL).add(CDGFluids.DIESEL.get().getSource());
+                prov.tag(GOOD_FUEL).add(CDGFluids.ETHANOL.get().getSource());
+                prov.tag(GOOD_FUEL).add(CDGFluids.BIODIESEL.get().getSource());
+                prov.tag(GOOD_FUEL).add(CDGFluids.GASOLINE.get().getSource());
             }
         }
     }

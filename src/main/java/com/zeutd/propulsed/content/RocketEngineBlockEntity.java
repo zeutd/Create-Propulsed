@@ -8,6 +8,7 @@ import com.simibubi.create.foundation.blockEntity.behaviour.CenteredSideValueBox
 import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollValueBehaviour;
 import com.zeutd.propulsed.PropBlockEntityTypes;
+import com.zeutd.propulsed.config.PropConfig;
 import com.zeutd.propulsed.data.PropTags;
 import dev.ryanhcode.sable.api.block.BlockEntitySubLevelActor;
 import dev.ryanhcode.sable.api.block.propeller.BlockEntityPropeller;
@@ -41,7 +42,7 @@ public class RocketEngineBlockEntity extends SmartBlockEntity implements BlockEn
 
 
     public RocketEngineBehavior reb;
-    protected ScrollValueBehaviour inputThrust;
+    protected ScrollValueBehaviour inputThrottle;
     protected SmartFluidTankBehaviour tank;
 
     protected float remainingTicks = 0;
@@ -53,26 +54,25 @@ public class RocketEngineBlockEntity extends SmartBlockEntity implements BlockEn
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        this.inputThrust = new ScrollValueBehaviour(
+        this.inputThrottle = new ScrollValueBehaviour(
                 TITLE,
                 this, new CenteredSideValueBoxTransform((b, d) -> b.getValue(WrenchableDirectionalBlock.FACING).getAxis() != d.getAxis()));
-        this.inputThrust.between(50, 100);
-        this.inputThrust.setValue(100);
-        this.inputThrust.withFormatter(num -> num + "N");
-        behaviours.add(inputThrust);
+        this.inputThrottle.between(1, 100);
+        this.inputThrottle.setValue(100);
+        this.inputThrottle.withFormatter(num -> num + "%");
+        behaviours.add(inputThrottle);
         reb = createBehavior();
         behaviours.add(reb);
         tank = SmartFluidTankBehaviour.single(this, 1000);
+        behaviours.add(tank);
     }
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,
                 PropBlockEntityTypes.ROCKET_ENGINE.get(),
                 (be, side) -> {
-                    if (side == null)
+                    if (side == null || side == be.getBlockDirection())
                         return be.tank.getCapability();
-                    Direction facing = be.getBlockState().getValue(WrenchableDirectionalBlock.FACING);
-                    if (facing == side) return be.tank.getCapability();
                     return null;
                 });
     }
@@ -106,8 +106,8 @@ public class RocketEngineBlockEntity extends SmartBlockEntity implements BlockEn
         final RocketEngineBehavior behavior = new RocketEngineBehavior(this);
         behavior.setThrustDirection(JOMLConversion.toJOML(Vec3.atLowerCornerOf(this.getBlockDirection().getOpposite().getNormal())));
 
-        behavior.setParticleAmountUpdater(() -> 10. * getThrottle());
-        behavior.setParticleCountProperties(5);
+        behavior.setParticleAmountUpdater(() -> 10. * PropConfig.client().rocketEngineParticleDensity.getF() * getRedstoneThrottle());
+        behavior.setParticleCountProperties(12);
         behavior.setParticlePositionUpdater((v, random) -> {
             final double R = Math.sqrt(Mth.lerp(random.nextFloat(), 0, 9f * 9f / 16f / 16f));
             final double angle = Math.PI * 2.0 * random.nextFloat();
@@ -130,7 +130,7 @@ public class RocketEngineBlockEntity extends SmartBlockEntity implements BlockEn
 
     @Override
     public double getThrust() {
-        return inputThrust.getValue() * getThrottle();
+        return inputThrottle.getValue() / 100. * 200. * PropConfig.server().physics.basicRocketEngineMaxThrust.getF() * getRedstoneThrottle();
     }
 
     @Override
@@ -142,13 +142,13 @@ public class RocketEngineBlockEntity extends SmartBlockEntity implements BlockEn
     }
 
     @Override
-    public double getThrottle(){
+    public double getRedstoneThrottle(){
         return 1 - signal / 15f;
     }
 
     @Override
     public boolean isActive() {
-        return signal != 15 && tank.getPrimaryHandler().getFluid().is(PropTags.FluidTags.FUEL);
+        return signal < 15 && (tank.getPrimaryHandler().getFluid().is(PropTags.FluidTags.FUEL) || tank.getPrimaryHandler().getFluid().is(PropTags.FluidTags.GOOD_FUEL));
     }
 
     @Override
@@ -167,7 +167,7 @@ public class RocketEngineBlockEntity extends SmartBlockEntity implements BlockEn
     public void onActiveTick() {
         this.reb.spawnParticles();
         if (remainingTicks < 2) {
-            remainingTicks += (float) (getThrust() / getFuelBurnRate());
+            remainingTicks += (float) (2 / getFuelBurnRate());
             tank.getPrimaryHandler().drain((int) getThrust(), IFluidHandler.FluidAction.EXECUTE);
         }
 

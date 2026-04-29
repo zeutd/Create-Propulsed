@@ -1,9 +1,12 @@
 package com.zeutd.propulsed;
 
 import com.mojang.logging.LogUtils;
+import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import com.zeutd.propulsed.client.PropParticleTypes;
+import com.zeutd.propulsed.config.PropConfig;
 import com.zeutd.propulsed.content.RocketEngineBlockEntity;
+import com.zeutd.propulsed.data.PropLang;
 import com.zeutd.propulsed.data.PropTags;
 import dev.simulated_team.simulated.registrate.SimulatedRegistrate;
 import net.minecraft.resources.ResourceKey;
@@ -33,12 +36,14 @@ public class Propulsed {
 
 
     public Propulsed(final IEventBus modBus, final ModContainer modContainer){
+        getRegistrate().addDataGenerator(ProviderType.LANG, PropLang::registrateLang);
         PropParticleTypes.register(modBus);
         getRegistrate().registerEventListeners(modBus);
         PropBlocks.init();
         PropBlockEntityTypes.init();
 
         LOGGER.info("Propulsed Initialized!");
+        PropConfig.register(modContainer);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)

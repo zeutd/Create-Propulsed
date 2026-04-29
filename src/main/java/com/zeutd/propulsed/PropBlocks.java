@@ -28,6 +28,7 @@ public class PropBlocks {
     public static final BlockEntry<RocketEngineBlock> ROCKET_ENGINE =
             REGISTRATE.block("rocket_engine", RocketEngineBlock::new)
                     .initialProperties(SharedProperties::netheriteMetal)
+                    .lang("Basic Rocket Engine")
                     .properties(BlockBehaviour.Properties::noOcclusion)
                     .addLayer(() -> RenderType::cutoutMipped)
                     .transform(pickaxeOnly())
