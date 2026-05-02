@@ -5,7 +5,8 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import com.zeutd.propulsed.client.PropParticleTypes;
 import com.zeutd.propulsed.config.PropConfig;
-import com.zeutd.propulsed.content.RocketEngineBlockEntity;
+import com.zeutd.propulsed.content.basic.RocketEngineBlockEntity;
+import com.zeutd.propulsed.content.large.LargeRocketEngineStructuralBlockEntity;
 import com.zeutd.propulsed.data.PropLang;
 import com.zeutd.propulsed.data.PropTags;
 import dev.simulated_team.simulated.registrate.SimulatedRegistrate;
@@ -56,6 +57,7 @@ public class Propulsed {
     @SubscribeEvent
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         RocketEngineBlockEntity.registerCapabilities(event);
+        LargeRocketEngineStructuralBlockEntity.registerCapabilities(event);
     }
 
     public static SimulatedRegistrate getRegistrate() {

@@ -5,11 +5,9 @@ import com.simibubi.create.foundation.block.WrenchableDirectionalBlock;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.CenteredSideValueBoxTransform;
-import com.simibubi.create.foundation.blockEntity.behaviour.fluid.SmartFluidTankBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollValueBehaviour;
-import com.zeutd.propulsed.PropBlockEntityTypes;
 import com.zeutd.propulsed.config.PropConfig;
-import com.zeutd.propulsed.data.PropTags;
+import com.zeutd.propulsed.content.basic.RocketEngineBlock;
 import dev.ryanhcode.sable.api.block.BlockEntitySubLevelActor;
 import dev.ryanhcode.sable.api.block.propeller.BlockEntityPropeller;
 import dev.ryanhcode.sable.api.physics.force.ForceGroups;
@@ -27,35 +25,31 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.joml.Vector3d;
 
 import java.util.List;
 
-public class RocketEngineBlockEntity extends SmartBlockEntity implements BlockEntitySubLevelActor, BlockEntityPropeller, IHaveGoggleInformation, IRocketEngine {
+public abstract class BaseRocketEngine extends SmartBlockEntity implements BlockEntitySubLevelActor, BlockEntityPropeller, IHaveGoggleInformation, IRocketEngine {
 
     public static final Vector3d THRUST_VECTOR = new Vector3d();
     public static final Vector3d THRUST_POSITION = new Vector3d();
-    public static final Component TITLE = Component.translatable("aeronautics.display_source.propeller.thrust");
+    public static final Component THROTTLE_TITLE = Component.translatable("aeronautics.display_source.propeller.thrust");
 
 
     public RocketEngineBehavior reb;
     protected ScrollValueBehaviour inputThrottle;
-    protected SmartFluidTankBehaviour tank;
 
-    protected float remainingTicks = 0;
     protected int signal = 0;
 
-    public RocketEngineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+    public BaseRocketEngine(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+        this.setLazyTickRate(20);
     }
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         this.inputThrottle = new ScrollValueBehaviour(
-                TITLE,
+                THROTTLE_TITLE,
                 this, new CenteredSideValueBoxTransform((b, d) -> b.getValue(WrenchableDirectionalBlock.FACING).getAxis() != d.getAxis()));
         this.inputThrottle.between(1, 100);
         this.inputThrottle.setValue(100);
@@ -63,24 +57,11 @@ public class RocketEngineBlockEntity extends SmartBlockEntity implements BlockEn
         behaviours.add(inputThrottle);
         reb = createBehavior();
         behaviours.add(reb);
-        tank = SmartFluidTankBehaviour.single(this, 1000);
-        behaviours.add(tank);
-    }
-
-    public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,
-                PropBlockEntityTypes.ROCKET_ENGINE.get(),
-                (be, side) -> {
-                    if (side == null || side == be.getBlockDirection())
-                        return be.tank.getCapability();
-                    return null;
-                });
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         IHaveGoggleInformation.super.addToGoggleTooltip(tooltip, isPlayerSneaking);
-        containedFluidTooltip(tooltip, isPlayerSneaking, tank.getCapability());
         return true;
     }
 
@@ -125,20 +106,12 @@ public class RocketEngineBlockEntity extends SmartBlockEntity implements BlockEn
 
     @Override
     public double getAirflow() {
-        return 100;
+        return getThrust();
     }
 
     @Override
     public double getThrust() {
-        return inputThrottle.getValue() / 100. * 200. * PropConfig.server().physics.basicRocketEngineMaxThrust.getF() * getRedstoneThrottle();
-    }
-
-    @Override
-    public double getFuelBurnRate() {
-        if (tank.isEmpty()) return 1;
-        if (tank.getCapability().getFluidInTank(0).is(PropTags.FluidTags.GOOD_FUEL)) return 0.05;
-        if (tank.getCapability().getFluidInTank(0).is(PropTags.FluidTags.FUEL)) return 0.1;
-        return 1;
+        return inputThrottle.getValue() / 100. * getRedstoneThrottle() * getMaxThrust();
     }
 
     @Override
@@ -148,17 +121,26 @@ public class RocketEngineBlockEntity extends SmartBlockEntity implements BlockEn
 
     @Override
     public boolean isActive() {
-        return signal < 15 && (tank.getPrimaryHandler().getFluid().is(PropTags.FluidTags.FUEL) || tank.getPrimaryHandler().getFluid().is(PropTags.FluidTags.GOOD_FUEL));
+        return signal < 15;
     }
 
     @Override
     public void tick() {
         super.tick();
-        signal = getLevel().getBestNeighborSignal(getBlockPos());
         this.getLevel().setBlockAndUpdate(this.getBlockPos(), this.getBlockState().setValue(RocketEngineBlock.POWERED, this.signal > 0));
         if (this.isActive() && !this.isVirtual()) {
             this.onActiveTick();
         }
+    }
+
+    @Override
+    public void lazyTick() {
+        super.lazyTick();
+        updateSignal();
+    }
+
+    public void updateSignal(){
+        signal = getLevel().getBestNeighborSignal(getBlockPos());
     }
 
     /**
@@ -166,29 +148,17 @@ public class RocketEngineBlockEntity extends SmartBlockEntity implements BlockEn
      */
     public void onActiveTick() {
         this.reb.spawnParticles();
-        if (remainingTicks < 2) {
-            remainingTicks += (float) (2 / getFuelBurnRate());
-            tank.getPrimaryHandler().drain((int) getThrust(), IFluidHandler.FluidAction.EXECUTE);
-        }
-
-        if (remainingTicks >= 0) {
-            remainingTicks--;
-        }
     }
 
     @Override
     public void write(final CompoundTag compound, final HolderLookup.Provider registries, final boolean clientPacket) {
         super.write(compound, registries, clientPacket);
-        compound.putFloat("RemainingTicks", remainingTicks);
         compound.putInt("Signal", signal);
-        compound.put("Tank", this.tank.getPrimaryTank().writeNBT(registries));
     }
 
     @Override
     protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.read(tag, registries, clientPacket);
-        remainingTicks = tag.getFloat("RemainingTicks");
         signal = tag.getInt("Signal");
-        this.tank.getPrimaryTank().readNBT(tag.getCompound("Tank"), registries, clientPacket);
     }
 }

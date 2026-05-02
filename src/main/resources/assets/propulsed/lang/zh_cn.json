@@ -1,4 +1,6 @@
 {
+  "block.propulsed.large_rocket_engine": "大型火箭引擎",
+  "block.propulsed.large_rocket_engine_structure": "大型火箭引擎",
   "block.propulsed.rocket_engine": "基础火箭引擎",
   "propulsed.simulated_section.propulsed": "推进"
 }

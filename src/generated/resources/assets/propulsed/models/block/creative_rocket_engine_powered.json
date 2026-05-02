@@ -1,0 +1,6 @@
+{
+  "parent": "propulsed:block/rocket_engine",
+  "textures": {
+    "0": "propulsed:block/creative_rocket_engine_powered"
+  }
+}

@@ -1,4 +1,7 @@
 {
+  "block.propulsed.creative_rocket_engine": "Creative Rocket Engine",
+  "block.propulsed.large_rocket_engine": "Large Rocket Engine",
+  "block.propulsed.large_rocket_engine_structure": "Large Rocket Engine",
   "block.propulsed.rocket_engine": "Basic Rocket Engine",
   "propulsed.simulated_section.propulsed": "Propulsed"
 }

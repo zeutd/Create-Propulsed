@@ -1,0 +1,6 @@
+{
+  "parent": "propulsed:block/large_rocket_engine",
+  "textures": {
+    "0": "propulsed:block/large_rocket_engine_powered"
+  }
+}

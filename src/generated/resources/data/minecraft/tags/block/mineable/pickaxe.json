@@ -1,5 +1,8 @@
 {
   "values": [
-    "propulsed:rocket_engine"
+    "propulsed:rocket_engine",
+    "propulsed:large_rocket_engine",
+    "propulsed:large_rocket_engine_structure",
+    "propulsed:creative_rocket_engine"
   ]
 }

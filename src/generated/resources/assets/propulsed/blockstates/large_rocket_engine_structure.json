@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "can_input=false": {
+      "model": "minecraft:block/air"
+    },
+    "can_input=true": {
+      "model": "minecraft:block/air"
+    }
+  }
+}
