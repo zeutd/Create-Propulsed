@@ -32,10 +32,10 @@ public class RocketEngineRenderer extends SmartBlockEntityRenderer<BaseRocketEng
         VertexConsumer vc = buffer.getBuffer(NeoForgeRenderTypes.ITEM_UNLIT_TRANSLUCENT.get());
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(TEXTURE);
         ms.pushPose();
-        ms.translate(-1, -1, -1);
+        ms.translate(-0.5 - (blockEntity.getSize() - 1.), -0.5 - (blockEntity.getSize() - 1.), -0.5 - (blockEntity.getSize() - 1.));
         ms.scale(blockEntity.getSize(), blockEntity.getSize(), blockEntity.getSize());
+        ms.translate(0.5, 0.5, 0.5);
         part(vc, ms, sprite, blockEntity.getBlockState().getValue(WrenchableDirectionalBlock.FACING).getOpposite(), overlay, blockEntity.getFlameOffset());
-        ms.translate(0, 0, 0);
         ms.popPose();
     }
 
