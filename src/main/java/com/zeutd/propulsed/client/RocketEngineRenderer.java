@@ -28,7 +28,7 @@ public class RocketEngineRenderer extends SmartBlockEntityRenderer<BaseRocketEng
     @Override
     protected void renderSafe(BaseRocketEngine blockEntity, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
         super.renderSafe(blockEntity, partialTicks, ms, buffer, light, overlay);
-        //if (!blockEntity.isActive()) return;
+        if (!blockEntity.isActive()) return;
         VertexConsumer vc = buffer.getBuffer(NeoForgeRenderTypes.ITEM_UNLIT_TRANSLUCENT.get());
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(TEXTURE);
         ms.pushPose();
