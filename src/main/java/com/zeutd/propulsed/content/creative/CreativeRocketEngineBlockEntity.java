@@ -2,7 +2,6 @@ package com.zeutd.propulsed.content.creative;
 
 import com.zeutd.propulsed.config.PropConfig;
 import com.zeutd.propulsed.content.BaseRocketEngine;
-import com.zeutd.propulsed.content.basic.RocketEngineBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,6 +23,6 @@ public class CreativeRocketEngineBlockEntity extends BaseRocketEngine {
 
     @Override
     public double getMaxThrust() {
-        return 256. * PropConfig.server().physics.creativeRocketEngineMaxThrust.getF();
+        return 128. * PropConfig.server().physics.creativeRocketEngineMaxThrust.getF();
     }
 }

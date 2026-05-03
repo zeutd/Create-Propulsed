@@ -30,7 +30,12 @@ public class LargeRocketEngineBlockEntity extends RocketEngineBlockEntity {
 
     @Override
     public double getMaxThrust() {
-        return 8192. * PropConfig.server().physics.creativeRocketEngineMaxThrust.getF();
+        return 4096. * PropConfig.server().physics.creativeRocketEngineMaxThrust.getF();
+    }
+
+    @Override
+    public int getFluidCapacity() {
+        return 16000;
     }
 
     @Override

@@ -30,8 +30,12 @@ public class RocketEngineBlockEntity extends BaseRocketEngine {
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
-        tank = SmartFluidTankBehaviour.single(this, 1000);
+        tank = SmartFluidTankBehaviour.single(this, getFluidCapacity());
         behaviours.add(tank);
+    }
+
+    public int getFluidCapacity(){
+        return 4000;
     }
 
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
@@ -49,11 +53,6 @@ public class RocketEngineBlockEntity extends BaseRocketEngine {
         super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         containedFluidTooltip(tooltip, isPlayerSneaking, tank.getCapability());
         return true;
-    }
-
-    @Override
-    public double getThrust() {
-        return inputThrottle.getValue() / 100. * 200. * PropConfig.server().physics.basicRocketEngineMaxThrust.getF() * getRedstoneThrottle();
     }
 
     public double getFuelBurnRate() {
@@ -75,7 +74,7 @@ public class RocketEngineBlockEntity extends BaseRocketEngine {
 
     @Override
     public double getMaxThrust(){
-        return 256. * PropConfig.server().physics.basicRocketEngineMaxThrust.getF();
+        return 128. * PropConfig.server().physics.basicRocketEngineMaxThrust.getF();
     }
 
     @Override
