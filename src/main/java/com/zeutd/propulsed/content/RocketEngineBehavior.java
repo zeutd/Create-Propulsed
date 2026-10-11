@@ -42,7 +42,12 @@ public class RocketEngineBehavior extends BlockEntityBehaviour implements IHaveG
 
     @Override
     public void tick() {
-        this.updatedParticleAmount = this.particleAmountUpdater.get();
+        // The particle amount reads the CLIENT config (rocketEngineParticleDensity), which a dedicated server never
+        // loads, so on a server this threw "Cannot get config value before config is loaded" and crashed the
+        // server as soon as any rocket engine ticked (#1). The amount is only used by spawnParticles(), which is
+        // client-side only, so only refresh it there.
+        if (this.getWorld().isClientSide)
+            this.updatedParticleAmount = this.particleAmountUpdater.get();
 
         super.tick();
     }
